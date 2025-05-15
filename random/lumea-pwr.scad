@@ -9,18 +9,9 @@ oval = [47.5, 31.5, 37]; // z: usable space in x
 bottom = 5;
 wall = 2;
 
-module all(){
+module bananaplug(){
     difference(){
-        resize([oval.x, oval.y]) cylinder(d=oval.x, h=bottom);
-
-        translate([screw_dx-oval.x/2, screw_dy/2, 0]) {
-            translate([0, 0, bottom - screw.z]) cylinder(d=screw.x, h=screw.z);
-            cylinder(d=screw.y, h=bottom);
-        }
-        translate([screw_dx-oval.x/2, -screw_dy/2, 0]) {
-            translate([0, 0, bottom - screw.z]) cylinder(d=screw.x, h=screw.z);
-            cylinder(d=screw.y, h=bottom);
-        }
+        base();
 
         translate([-(sock_bot.x/2 + wall), 0, 0]){
             cylinder(d=sock_top.x, h=bottom);
@@ -33,4 +24,42 @@ module all(){
     }
 }
 
-all();
+module xt60_conn(){
+    xt_screw = [6, 2.5, 4, 1.5];
+    xt_outer = [27.5, 12.25, 4];
+    xt_inner = [15.75, 8.25, 3];
+    xt_holedx = 20.5;
+
+    translate([0, 0, bottom-xt_inner.z]) union(){
+        translate([-xt_outer.x/2, -xt_outer.y/2, -xt_outer.z]) cube(xt_outer);
+        translate([-xt_inner.x/2, -xt_inner.y/2, 0]) cube(xt_inner);
+        translate([xt_holedx/2, 0, -xt_inner.z]) cylinder(d=xt_screw.y, h=xt_screw.x);
+        translate([-xt_holedx/2, 0, -xt_inner.z]) cylinder(d=xt_screw.y, h=xt_screw.x);
+        translate([xt_holedx/2, 0, xt_inner.z-xt_screw[3]]) cylinder(d1=xt_screw.y, d2=xt_screw.z, h=xt_screw[3]);
+        translate([-xt_holedx/2, 0, xt_inner.z-xt_screw[3]]) cylinder(d1=xt_screw.y, d2=xt_screw.z, h=xt_screw[3]);
+    }
+}
+
+module xt60(){
+    difference(){
+        base();
+        xt60_conn();
+    }
+}
+
+module base(){
+    difference(){
+        resize([oval.x, oval.y]) cylinder(d=oval.x, h=bottom);
+
+        translate([screw_dx-oval.x/2, screw_dy/2, 0]) {
+            translate([0, 0, bottom - screw.z]) cylinder(d=screw.x, h=screw.z);
+            cylinder(d=screw.y, h=bottom);
+        }
+        translate([screw_dx-oval.x/2, -screw_dy/2, 0]) {
+            translate([0, 0, bottom - screw.z]) cylinder(d=screw.x, h=screw.z);
+            cylinder(d=screw.y, h=bottom);
+        }
+    }
+}
+
+xt60();
