@@ -9,6 +9,19 @@ oval = [47.5, 31.5, 37]; // z: usable space in x
 bottom = 5;
 wall = 2;
 
+xt_screw = [6, 2.5, 4, 1.5];
+xt_outer = [27.5, 12.25, 4];
+xt_inner = [15.75, 8.25, 3];
+xt_holedx = 20.5;
+xt_r = 3;
+
+module radius(r=1, h=1){
+    difference(){
+        cube([r, r, h]);
+        cylinder(r=r, h=h);
+    }
+}
+
 module bananaplug(){
     difference(){
         base();
@@ -25,14 +38,13 @@ module bananaplug(){
 }
 
 module xt60_conn(){
-    xt_screw = [6, 2.5, 4, 1.5];
-    xt_outer = [27.5, 12.25, 4];
-    xt_inner = [15.75, 8.25, 3];
-    xt_holedx = 20.5;
-
     translate([0, 0, bottom-xt_inner.z]) union(){
         translate([-xt_outer.x/2, -xt_outer.y/2, -xt_outer.z]) cube(xt_outer);
-        translate([-xt_inner.x/2, -xt_inner.y/2, 0]) cube(xt_inner);
+        difference(){
+            translate([-xt_inner.x/2, -xt_inner.y/2, 0]) cube(xt_inner);
+            translate([xt_inner.x/2-xt_r, xt_inner.y/2-xt_r, 0]) radius(r=xt_r, h=xt_inner.z);
+            translate([xt_inner.x/2-xt_r, -xt_inner.y/2+xt_r, 0]) rotate([0, 0, -90]) radius(r=xt_r, h=xt_inner.z);
+        }
         translate([xt_holedx/2, 0, -xt_inner.z]) cylinder(d=xt_screw.y, h=xt_screw.x);
         translate([-xt_holedx/2, 0, -xt_inner.z]) cylinder(d=xt_screw.y, h=xt_screw.x);
         translate([xt_holedx/2, 0, xt_inner.z-xt_screw[3]]) cylinder(d1=xt_screw.y, d2=xt_screw.z, h=xt_screw[3]);
@@ -44,6 +56,8 @@ module xt60(){
     difference(){
         base();
         xt60_conn();
+        translate([-xt_inner.x/2-2*wall-2*xt_screw.y, -6.5/2+2.75, bottom-0.25]) linear_extrude(1) offset(r=0.1) text("+", size=6.5, halign="center", valign="center", font="Source Code Pro");
+        translate([xt_inner.x/2+2*wall+2*xt_screw.y, -1.4, bottom-0.25]) linear_extrude(1) offset(r=0.1) text("-", size=6.5, halign="center", valign="center", font="Source Code Pro");
     }
 }
 
