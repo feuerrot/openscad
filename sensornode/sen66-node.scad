@@ -1,5 +1,5 @@
 // Sensor node containing a Sensirion SEN66, SPI 7segment display and probably some sort of ESP32
-sen66 = [55, 25.5, 21.2];
+sen66 = [55, 26, 21.2];
 display_pcb = [82.2, 15, 4];
 digits = [60.8, 15, 7.5];
 digits_offset = 12.2; // from left
@@ -86,7 +86,7 @@ module caseesp(){
             translate([wall, wall, esp_pcb.y + wall + 2*wall]) rotate([-90, 0, 0]) esp();
         }
 
-        translate([wall, wall, esp_pcb.y + wall + 2*wall]) rotate([-90, 0, 0]) espusb();
+        translate([wall, esp_pcb.z + wall, esp_pcb.y + wall + 2*wall]) rotate([-90, 0, 0]) espusb();
     }
 }
 
